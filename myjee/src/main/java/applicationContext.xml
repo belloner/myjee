@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
-	
+
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans     
         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd    
         http://www.springframework.org/schema/context     
@@ -16,11 +15,11 @@
        http://www.springframework.org/schema/mvc  
         http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  
       ">
-	<context:component-scan base-package="com.sinotrans.myjee.springmvc"></context:component-scan>
-	
+	<context:component-scan base-package="com.*"></context:component-scan>
 
-    <context:annotation-config />  
-    <mvc:annotation-driven /> 
+
+	<context:annotation-config />
+	<mvc:annotation-driven />
 
 
 	<!-- 定义视图解析器ViewResolver -->
@@ -34,4 +33,58 @@
 			<value>.jsp</value>
 		</property>
 	</bean>
+	<!-- aop -->
+	<bean id="beforeAdvice" class="com.jamesfen.myjee.aop.xml.BeforeAdvice"></bean>
+	<bean id="afterAdvice" class="com.jamesfen.myjee.aop.xml.AfterAdvice"></bean>
+	<bean id="compareInterceptor" class="com.jamesfen.myjee.aop.xml.CompareInterceptor"></bean>
+	<bean id="studenttarget" class="com.jamesfen.myjee.aop.xml.StudentImpl"></bean>
+
+	<bean id="student" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.jamesfen.myjee.aop.xml.IStudent</value>
+		</property>
+		<property name="interceptorNames">
+			<list>
+
+				<value>afterAdvice</value>
+				<!--<value>beforeAdvice</value> <value>compareInterceptor</value> -->
+			</list>
+		</property>
+		<property name="target">
+			<ref bean="studenttarget" />
+		</property>
+
+	</bean>
+	<!-- aop -->
+
+	<!-- 定义业务类 -->
+	<bean id="calculate" class="com.jamesfen.myjee.aop.xml2.CalculateImpl" />
+	<!-- 定义一个安全控制切面 -->
+	<bean id="authority" class="com.jamesfen.myjee.aop.xml2.SecurityAspect" />
+
+	<!-- 通过配置文件实现 -->
+	<aop:config>
+		<!-- 定义切面 -->
+		<aop:aspect id="security" ref="authority">
+			<!-- 指定切入点 -->
+			<aop:pointcut expression="execution(* com.jamesfen.myjee.aop.xml2.*.*(..))"
+				id="securityPointcut" />
+			<!-- 配置前置通知 -->
+			<aop:before method="checkAuthority" pointcut-ref="securityPointcut" />
+			<!-- 还可以配置环绕通知,后置通知，异常通知 -->
+			<aop:around pointcut-ref="securityPointcut" method="doAround" />
+
+		</aop:aspect>
+	</aop:config>
+	
+    <!-- 注解方式的AOP配置 -->
+
+	<!-- 加上aop的命名空间以及DTD验证 -->
+     <aop:aspectj-autoproxy /><!-- 打开aop对@Aspectj的注解支持 ,相当于为注解提供解析功能 -->
+
+	<bean id="myInterceptor" class="com.jamesfen.myjee.aop.annotation.MyInterceptor"></bean>
+
+	<bean id="personService" class="com.jamesfen.myjee.aop.annotation.PersonServiceImpl">
+	</bean>
+	<!-- 注解方式的AOP配置 -->
 </beans>

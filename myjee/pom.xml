@@ -7,16 +7,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>myjee Maven Webapp</name>
 	<url>http://maven.apache.org</url>
-	<properties>  
-         
-        <jackson.version>1.9.10</jackson.version>  
-          
-    </properties> 
+	<properties>
+
+		<jackson.version>1.9.10</jackson.version>
+
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>4.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -24,7 +24,7 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -53,6 +53,13 @@
 			<scope>compile</scope>
 		</dependency>
 		<!-- 以上是SPRING MVC依赖 -->
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.2</version>
+		</dependency>
+
 		<dependency>
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
@@ -68,11 +75,11 @@
 			<artifactId>json-simple</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<dependency>  
-          <groupId>org.codehaus.jackson</groupId>  
-            <artifactId>jackson-mapper-asl</artifactId>  
-           <version>${jackson.version}</version>  
-        </dependency> 
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>myjee</finalName>
