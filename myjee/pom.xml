@@ -10,14 +10,21 @@
 	<properties>
 
 		<jackson.version>1.9.10</jackson.version>
-
+        <apache.poi.version>3.13</apache.poi.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.1</version>
-			<scope>test</scope>
+			<version>4.10</version>
+			<!-- <scope>test</scope> 注释后在src/main/java的@Test也有效 -->
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+			<classifier />
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -80,8 +87,89 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
+<!-- Apache POI -->
+       <dependency>
+                 <groupId>org.apache.poi</groupId>
+                 <artifactId>poi</artifactId>
+                 <version>${apache.poi.version}</version>
+          </dependency>
+          <dependency>
+                 <groupId>org.apache.poi</groupId>
+                 <artifactId>poi-ooxml</artifactId>
+                 <version>${apache.poi.version}</version>
+          </dependency>
+          <dependency>
+                 <groupId>org.apache.poi</groupId>
+                 <artifactId>poi-ooxml-schemas</artifactId>
+                 <version>${apache.poi.version}</version>
+          </dependency>
+          <dependency>
+                 <groupId>org.apache.poi</groupId>
+                 <artifactId>poi-scratchpad</artifactId>
+                 <version>${apache.poi.version}</version>
+          </dependency>
+          <dependency>
+                 <groupId>org.apache.poi</groupId>
+                 <artifactId>ooxml-schemas</artifactId>
+                 <version>1.1</version>
+          </dependency>   
+
+          
+		
+<!-- Apache POI -->
 	</dependencies>
 	<build>
 		<finalName>myjee</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<webappDirectory>${basedir}/target/myjee</webappDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.2.8.v20150217</version>
+				<configuration>
+					<stopKey>shutdown</stopKey>
+					<stopPort>9966</stopPort>
+					<!-- 启动端口 -->
+					<httpConnector>
+						<port>8081</port>
+					</httpConnector>
+					<!-- 自动热部署 大于 0的数值表示开启，0 表示关闭，单位为秒 -->
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<!-- reload设为 manual 的好处是直至你在 Console 或命令行中敲回车键（Enter）的时候才触发重新加载的动作。 -->
+					<reload>manual</reload>
+					<!-- dumpOnStart 默认值为 false，如果设为 true，jetty 在启动时会把当前服务进程的内存信息输出到控制台中，但这并不会保存到文件中 -->
+					<dumpOnStart>true</dumpOnStart>
+					<!-- 上下文 -->
+					<webApp>
+						<contextPath>/${project.artifactId}</contextPath>
+					</webApp>
+					<!-- 项目的静态资源文件目录默认是 src/main/webapp，如果静态资源目录有多个，或者不在默认的 src/main/webapp 目录下，可做如下配置： -->
+					<!-- <resourceBases>
+						<resourceBase>${project.basedir}/src/main/webapp</resourceBase>
+						<resourceBase>${project.basedir}/commons</resourceBase>
+					</resourceBases> -->
+
+
+					<!-- 访问日志 -->
+					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
+						<filename>target/access-yyyy_mm_dd.log</filename>
+						<filenameDateFormat>yyyy_MM_dd</filenameDateFormat>
+						<logDateFormat>yyyy-MM-dd HH:mm:ss</logDateFormat>
+						<logTimeZone>GMT+8:00</logTimeZone>
+						<append>true</append>
+						<logServer>true</logServer>
+						<retainDays>120</retainDays>
+						<logCookies>true</logCookies>
+					</requestLog>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
